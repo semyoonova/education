@@ -4,7 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {
-		int[] array = new int[] {6, 5, 1, 9, 0, 3, 4};
+		//int[] array = new int[] {6, 5, 1, 9, 0, 3, 4};
 		//Console.WriteLine(array.Sum());
 		//Console.WriteLine(array.Max());
 		//Console.WriteLine(NumOfEven(array));
@@ -21,12 +21,25 @@ class Program
 		//Console.WriteLine(GetIndex(array, 5));
 		//decimal[] prices = new decimal[] {1234.3456m, 123.456m, 87654.345m, 98765.345m};
 		//Console.WriteLine(GetProfit(prices));
-		string input = "Это   строка    с   лишними  пробелами."; 
+		//string input = "Это   строка    с   лишними  пробелами."; 
 		//Console.WriteLine(DeleteSpace(input));
 		//ReverseWords(input);
 		//Console.WriteLine(DeleteSimbols(input));
 		//Console.WriteLine(ChangeToWordsUpperRegister(input));
-		Console.WriteLine(NumOfWords(input));
+		//Console.WriteLine(NumOfWords(input));
+		//int[][] result = GeneratePascalTriangle(5);
+		//foreach (var res in result)
+		//{
+		//	Console.WriteLine(string.Join( " ",res));
+		//}
+		//Console.WriteLine(string.Join( " ",GetPascalTriangleRow(4)));
+		//int[] nums =[3,2,3,2,3,3];
+		//Console.WriteLine(GetMajorityElement(nums));
+		//string[] words = {"qwer", "asdfg", "cvbn", "edfv", "ijhb", "qwer" };
+		//Console.WriteLine(FindWords(words));
+		//string[] emails = {"wer.qw@mail.ru", "werqw@mail.ru", "wer.qw+df@mail.ru",
+		//"wer.qwwe@mail.ru", "dfwer.qw@mail.ru"};
+		//Console.WriteLine(GetCountUniqueEmails(emails));
     }
 	
 	static int NumOfEven(int[] array)
@@ -230,5 +243,131 @@ class Program
 	{
 		input = DeleteSpace(input);
 		return input.Split(' ').Length;
+	}
+
+	static int[][] GeneratePascalTriangle(int numRows)
+	{
+		try
+		{
+			if (numRows < 1 || numRows > 30)
+			{
+			throw new ArgumentException("Число должно быть от 1 до 30");
+			}
+		}
+		catch (ArgumentException ex)
+		{
+			Console.WriteLine("Недопустимое число: " + ex.Message);  
+		}
+		
+		int[][] result = new int[5][];
+		for (int i = 0; i < numRows; i++)
+		{
+			result[i]= new int[i + 1];
+			for (int j = 0; j <= i; j++)
+			{
+				result[i][j] = (j == 0 || j == i)
+				? 1
+				: result[i - 1][j - 1] + result[i - 1][j];
+			}
+		}
+		return result;
+	}
+
+	static int[] GetPascalTriangleRow(int row)
+	{
+		int[][] triangle = GeneratePascalTriangle(row + 1);
+		return triangle[row];
+	}
+
+	static int? GetMajorityElement(int[] nums)
+	{
+		int n = nums.Length;
+		try
+		{
+			if (n < 1 || n > 50000)
+			{
+			throw new ArgumentException("массив должен быть размером от 1 до 50000 элементов");
+			}
+		}
+		catch (ArgumentException ex)
+		{
+			Console.WriteLine("Недопустимый массив: " + ex.Message);  
+		}
+		Array.Sort(nums);
+		for (int i = 0; i < n / 2 + 1 ; i++)
+		{
+			if (nums[i]==nums[i + n / 2])
+			{
+				return nums[i];
+			}
+		}
+		return null; 
+	}
+
+	static string FindWordsFromString(string[] words, string row)
+	{
+		string result = "";
+		
+		foreach (string word in words)
+		{
+			int i = 0;
+			while ( i < word.Length && row.Contains(word[i].ToString()))
+			{
+				i++;
+			}
+			if (i == word.Length)
+			{
+				result = result.Insert(0, $"{word}, ");
+			}
+		}
+		
+		return result;
+	}
+	
+	static string FindWords(string[] words)
+	{
+		try 
+		{
+			if (words == null || words.Length == 0)
+			{
+				throw new NotSupportedException("пустой массив");
+			}
+		}
+		catch (NotSupportedException ex)
+		{
+			Console.WriteLine("Недопустимый формат: " + ex.Message);  
+		}
+		string firstResult = FindWordsFromString(words, "qwertyuiopQWERTYUIOP");
+		string secondResult = FindWordsFromString(words, "asdfghjklASDFGHJKL");
+		string thirdResult = FindWordsFromString(words, "zxcvbnmZXCVBNM");
+		string result = firstResult.Insert(0, secondResult);
+		result = result.Insert(0, thirdResult);
+		
+		return result;
+	}
+
+	static int GetCountUniqueEmails(string[] emails)
+	{
+		string domen = emails[0].Substring(emails[0].IndexOf('@'));
+		for (int i = 0; i < emails.Length; i++)
+		{
+			emails[i] = emails[i].Replace(domen, "");
+			emails[i] = emails[i].Replace(".", "");
+			int indexOfPlus = emails[i].IndexOf('+');
+			if (indexOfPlus != -1)
+			{
+				emails[i] = emails[i].Remove(indexOfPlus);
+			}
+		}
+		Array.Sort(emails);
+		int number = emails.Length;
+		for (int i = 1; i < emails.Length; i++)
+		{
+			if (emails[i] == emails[i-1])
+			{
+				number--; 
+			}
+		}
+		return number;
 	}
 }
