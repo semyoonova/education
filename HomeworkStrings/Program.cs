@@ -40,6 +40,10 @@ class Program
 		//string[] emails = {"wer.qw@mail.ru", "werqw@mail.ru", "wer.qw+df@mail.ru",
 		//"wer.qwwe@mail.ru", "dfwer.qw@mail.ru"};
 		//Console.WriteLine(GetCountUniqueEmails(emails));
+		string s = "2-5g-3-J";
+		int k = 2;
+		Console.WriteLine(FormatLicenseKey(s,k));
+
     }
 	
 	static int NumOfEven(int[] array)
@@ -369,5 +373,22 @@ class Program
 			}
 		}
 		return number;
+	}
+
+	static string FormatLicenseKey(string key, int k)
+	{
+		key = key.Replace("-", "");
+		key = key.ToUpper();
+		int n = key.Length / k;
+		int fg = key.Length % k == 0
+		? k : key.Length % k;
+		string result = key.Substring(0, fg);
+		
+		for (int i = 1; i <= n; i++)
+		{
+			result += $"-{key.Substring(fg, k)}";
+			fg += k;
+		}
+		return result; 
 	}
 }
